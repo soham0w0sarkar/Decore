@@ -9,14 +9,21 @@
 	} from '@tabler/icons-svelte';
 
 	let sidebar = false;
+	let showSearchModal = false;
 
+	// Toggle Sidebar visibility
 	const toggleSidebar = () => {
 		sidebar = !sidebar;
 	};
 
+	// Toggle Search Modal visibility
+	const toggleSearchModal = () => {
+		showSearchModal = !showSearchModal;
+	};
+
 	/**
+	 * Close sidebar when clicking outside
 	 * @param {MouseEvent} event
-	 * @param event
 	 */
 	const closeSidebar = (event) => {
 		if (
@@ -30,6 +37,14 @@
 		}
 	};
 
+	// Clean up event listeners
+	onMount(() => {
+		document.addEventListener('click', closeSidebar);
+		return () => {
+			document.removeEventListener('click', closeSidebar);
+		};
+	});
+
 	export let pathname;
 	export let screenWidth;
 	export const categories = [
@@ -37,13 +52,6 @@
 		{ name: 'Category 2' },
 		{ name: 'Category 3' }
 	];
-
-	onMount(() => {
-		document.addEventListener('click', closeSidebar);
-		return () => {
-			document.removeEventListener('click', closeSidebar);
-		};
-	});
 </script>
 
 {#if screenWidth >= 991}
@@ -57,14 +65,20 @@
 			{#if pathname !== '/login'}
 				<span class="w-2/5"><a href="/login">Login</a></span>
 			{/if}
-			<IconHeart />
-			<IconShoppingCart />
+			<!-- Wishlist (Heart Icon) -->
+			<button on:click={() => window.location.href = '/wishlist'} aria-label="Wishlist">
+				<IconHeart />
+			</button>
+			<!-- Shopping Cart -->
+			<button on:click={() => window.location.href = '/cart'} aria-label="Shopping Cart">
+				<IconShoppingCart />
+			</button>
 		</span>
 	</div>
 {:else}
 	<div class="bg-surface-50 flex items-center justify-around overflow-visible min-h-20">
 		<span class="flex gap-4 w-1/2 justify-start p-4">
-			<button on:click={toggleSidebar}>
+			<button on:click={toggleSidebar} aria-label="Open Sidebar">
 				<IconLayoutSidebarLeftExpand />
 			</button>
 			{#if sidebar}
@@ -75,11 +89,24 @@
 			<span class="font-bold"><a href="/">Logo</a></span>
 		</span>
 		<span class="flex gap-4 w-1/2 justify-end p-4">
-			<IconSearch />
-			<IconHeart />
-			<IconShoppingCart />
+			<!-- Search Icon -->
+			<button on:click={toggleSearchModal} aria-label="Open Search">
+				<IconSearch />
+			</button>
+			<!-- Wishlist -->
+			<button on:click={() => window.location.href = '/wishlist'} aria-label="Wishlist">
+				<IconHeart />
+			</button>
+			<!-- Shopping Cart -->
+			<button on:click={() => window.location.href = '/cart'} aria-label="Shopping Cart">
+				<IconShoppingCart />
+			</button>
 		</span>
 	</div>
+
+	{#if showSearchModal}
+		<Search />
+	{/if}
 {/if}
 
 <style>

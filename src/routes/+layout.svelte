@@ -4,6 +4,7 @@
 	import { Header, Links, Loader } from '$lib';
 	import { page } from '$app/stores';
 	import '../app.css';
+	import '../styles/global.css';
 
 	const { data: propsData, children } = $props();
 	const { supabase, session } = propsData;
